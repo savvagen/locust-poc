@@ -1,78 +1,53 @@
 version: "3.4"
 
 x-common: &common
-  image: locustio/locust
+  image: locust-tasks:latest
   environment: &common-env
-    TARGET_URL: http://locust-master:8089
-    LOCUSTFILE_PATH: /tmp/locust-poc/scenarios/basic.py
-  volumes:
-    - ../:/tests
+    TARGET_HOST: https://jsonplaceholder.typicode.com
+    LOCUST_TEST: LoadTests
+#  volumes:
+#    - ../:/tests
 
 services:
-  locust-master:
+
+  master:
     <<: *common
     ports:
       - 8089:8089
     environment:
       <<: *common-env
       LOCUST_MODE: master
+      EXPECT_SLAVES: 2
+      ADD_OPTIONS: "-c 100 -r 20 --no-web"
+    networks:
+      - loadtest
+    hostname: master
+    container_name: master
 
-  locust-slave:
+  slave1:
     <<: *common
+    links:
+      - master
     environment:
       <<: *common-env
-      LOCUST_MODE: slave
-      LOCUST_MASTER_HOST: locust-master
+      LOCUST_MODE: worker
+      LOCUST_MASTER: master
+    networks:
+      - loadtest
+    container_name: slave1
 
+  slave2:
+    <<: *common
+    links:
+      - master
+    environment:
+      <<: *common-env
+      LOCUST_MODE: worker
+      LOCUST_MASTER: master
+    networks:
+      - loadtest
+    container_name: slave2
 
-
-#version: "3.5"
-#services:
-#  locust-master:
-#    image: hakobera/locust:latest
-#    environment:
-#      - LOCUST_MODE=master
-#      - TARGET_URL=https://jsonplaceholder.typicode.com
-#      # Other envs
-#      - LOCUSTFILE_PATH=/tmp/random_scenarios.py
-#      - SCENARIO_FILE=/tmp/random_scenarios.py
-#      - LOCUST_MASTER_HOST=locust-master
-#    networks:
-#      - performance
-#    volumes:
-#      - ./scenarios:/tmp
-#    container_name: locust-master
-#  locust-slave1:
-#    image: hakobera/locust:latest
-#    environment:
-#      - LOCUST_MODE=slave
-#      - MASTER_HOST=locust-master
-#      - TARGET_URL=https://jsonplaceholder.typicode.com
-#      # Other envs
-#      - LOCUSTFILE_PATH=/tmp/random_scenarios.py
-#      - SCENARIO_FILE=/tmp/random_scenarios.py
-#      - LOCUST_MASTER_HOST=locust-master
-#    networks:
-#      - performance
-#    volumes:
-#      - ./scenarios:/tmp
-#    container_name: locust-slave1
-#  locust-slave2:
-#    image: hakobera/locust:latest
-#    environment:
-#      - LOCUST_MODE=slave
-#      - MASTER_HOST=locust-master
-#      - TARGET_URL=https://jsonplaceholder.typicode.com
-#      # Other envs
-#      - LOCUSTFILE_PATH=/tmp/random_scenarios.py
-#      - SCENARIO_FILE=/tmp/random_scenarios.py
-#      - LOCUST_MASTER_HOST=locust-master
-#    networks:
-#      - performance
-#    volumes:
-#      - ./scenarios:/tmp
-#    container_name: locust-slave2
-#
-#networks:
-#  performance:
-#    driver: bridge
+networks:
+  loadtest:
+    driver: bridge

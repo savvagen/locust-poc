@@ -206,5 +206,3 @@ docker run --name slave2 -it --rm \
    --network=locustnw locust-tasks:latest
 
 ```
-
-
