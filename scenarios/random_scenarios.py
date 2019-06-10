@@ -19,28 +19,28 @@ def register_user(l, payload):
     return l.client.post("/users", payload)
 
 def get_user(l, uuid):
-    return l.client.get(f'/users/{uuid}')
+    return l.client.get('/users/{}'.format(uuid))
 
 def get_posts(l):
     return l.client.get("/posts")
 
 def get_post(l, post_id):
-    return l.client.get(f"/posts/{post_id}")
+    return l.client.get("/posts/{}".format(post_id))
 
 def create_post(l, paylaod):
     return l.client.post("/posts", data=paylaod)
 
 def update_post(l, post_id, payload):
-    return l.client.put(f"/posts/{post_id}", data=payload)
+    return l.client.put("/posts/{}".format(post_id), data=payload)
 
 def patch_post(l, post_id, payload):
-    return l.client.patch(f"/posts/{post_id}", data=payload)
+    return l.client.patch("/posts/{}".format(post_id), data=payload)
 
 def delete_user(l, uuid):
-    return l.client.delete(f'/users/{uuid}')
+    return l.client.delete('/users/{}'.format(uuid))
 
 def delete_post(l, post_id):
-    return l.client.delete(f'/posts/{post_id}')
+    return l.client.delete('/posts/{}'.format(post_id))
 
 
 class UserScenario(TaskSet):
@@ -50,14 +50,14 @@ class UserScenario(TaskSet):
     def setup(self):
         print("Setup Data!")
         self.uuid = register_user(self, open("{}/user.json".format(json_path))).json()['id']
-        print(f"Registered user: {self.uuid}.")
+        print("Registered user: {}.".format(self.uuid))
         self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid}).json()['id']
-        print(f"Registered Post: {self.post_id}.")
+        print("Registered Post: {}.".format(self.post_id))
 
     def teardown(self):
-        print(f"Deleting User: {self.uuid}")
+        print("Deleting User: {}".format(self.uuid))
         delete_user(self, self.uuid)
-        print(f"Deleting Post: {self.post_id}")
+        print("Deleting Post: {}".format(self.post_id))
         delete_post(self, self.post_id)
 
     def on_start(self):

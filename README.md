@@ -141,20 +141,70 @@ locust -f scenarios/random_scenarios.py --slave --master-host=localhost
 After slaves initialization, the testing will be started.
 
 
+
+#
+## Run Locust in Docker containers
+
+1. Create network for locust tests: `docker network create --driver bridge locustnw`
+
+2. Check network was created: `docker network inspect locustnw`
+
+3. Build Docker image `locust-tasks:latest` with command:
+``` 
+docker build -t locust-tasks:latest -f Dockerfile .
+```
+
+#### Run tests in docker container
+1. Run Docker container with locust with web client:
+
+``` 
+
  docker run -it --rm -p=8089:8089 \
     -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
-    -e "NUM_CLIENTS=100" \
-    -e "HATCH_RATE=20" \
+    -e "ADD_OPTIONS=-c 100 -r 20" \
     -e "LOCUST_TEST=LoadTests" \
     --network=locustnw locust-tasks:latest
 
+```
 
 
- docker run -it --rm -p=8089:8089 \
-    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
-    -e "NUM_CLIENTS=100" \
-    -e "HATCH_RATE=20" \
-    -e "LOCUST_TEST=LoadTests" \
-    -e "LOCUST_MODE=master" \
-    -e "EXPECT_SLAVES=2" \
-    --network=locustnw locust-tasks:latest
+### Run tests using master and slaves
+
+1. Run Docker container with master:
+
+``` 
+
+ 
+docker run --name master --hostname master -it --rm -p=8089:8089 \
+   -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+   -e "LOCUST_TEST=LoadTests" \
+   -e "LOCUST_MODE=master" \
+   -e "EXPECT_SLAVES=2" \
+   -e ADD_OPTIONS="-c 100 -r 20 --no-web" \
+   --network=locustnw locust-tasks:latest
+
+
+```
+2. Run testing with spinning up 2 slaves:
+```
+
+ 
+docker run --name slave1 -it --rm \
+   --link master --env NO_PROXY=master \
+   -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+   -e "LOCUST_TEST=LoadTests" \
+   -e "LOCUST_MODE=worker" \
+   -e "LOCUST_MASTER=master" \
+   --network=locustnw locust-tasks:latest
+
+docker run --name slave2 -it --rm \
+   --link master --env NO_PROXY=master \
+   -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+   -e "LOCUST_TEST=LoadTests" \
+   -e "LOCUST_MODE=worker" \
+   -e "LOCUST_MASTER=master" \
+   --network=locustnw locust-tasks:latest
+
+```
+
+

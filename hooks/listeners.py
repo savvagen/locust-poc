@@ -23,7 +23,7 @@ def my_requests_number_handler(request_type, name, response_time, response_lengt
     total_reqs = locust.runners.global_stats.total.num_requests
     # print("Successfully fetched: %s" % (name))
     if total_reqs > 5000:
-        print(f"Stopping Requests! \n The Requests Number is > than {total_reqs}. \n Stopping!")
+        print("Stopping Requests! \n The Requests Number is > than {}. \n Stopping!".format(total_reqs))
         runners.locust_runner.stop()
         runners.locust_runner.quit()
 
