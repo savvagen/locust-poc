@@ -81,7 +81,7 @@ locust --host https://jsonplaceholder.typicode.com \      # Base URL
 
 #### Init master
 ``` 
- locust -f clients/api/api_client.py --slave --master-host=localhost
+ locust -f clients/api/api_client.py --master --master-host=localhost
 ```
 #### Connect 2 slaves
 ```
@@ -96,12 +96,54 @@ locust -f clients/api/api_client.py --slave --master-host=localhost
 #### Load Testing with stable 100 RPS
 
 ```
-  locust -f scenarios/random_scenarios.py --no-web -c 100 -r 20
+  locust -f scenarios/random_scenarios.py LoadTests --no-web -c 100 -r 20
 ```
 
 #### Stress Testing with stable 100 RPS
 
 ```
-  locust -f scenarios/random_scenarios.py --no-web -c 1000 -r 20
+  locust -f scenarios/random_scenarios.py StressTests --no-web -c 1000 -r 20
 
 ```
+
+#
+### Running Stress and load testing for SEQUENCE SCENARIOS using CLI
+#### Load Testing with stable 100 RPS
+
+```
+  locust -f scenarios/sequence_scenarios.py --no-web -c 100 -r 20
+```
+
+#### Stress Testing with stable 100 RPS
+
+```
+  locust -f scenarios/sequence_scenarios.py --no-web -c 1000 -r 20
+
+```
+
+### Running Tests on master
+1. Init master with command:
+``` 
+locust -f scenarios/random_scenarios.py LoadTests \
+        --no-web -c 50 -r 10 \
+        --master \
+        --master-host localhost \
+        --expect-slaves 2 \
+        --run-time 30
+```
+The master will be initialized and will be waiting minimum for 2 slaves to be connected to the master
+
+2. Init slaves with commands:
+``` 
+locust -f scenarios/random_scenarios.py --slave --master-host=localhost
+locust -f scenarios/random_scenarios.py --slave --master-host=localhost
+```
+After slaves initialization, the testing will be started.
+
+
+ docker run -it --rm -p=8089:8089 \
+    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+    -e "NUM_CLIENTS=100" \
+    -e "HATCH_RATE=20" \
+    -e "LOCUST_TEST=LoadTests" \
+    --network=locustnw locust-tasks:latest

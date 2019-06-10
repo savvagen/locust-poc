@@ -1,6 +1,5 @@
 setuptools
 wheel
 requests
-selenium
 locustio
 Faker

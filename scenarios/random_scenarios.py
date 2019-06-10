@@ -1,17 +1,18 @@
 import locust
 import os, sys
 from locust import TaskSet, Locust, HttpLocust, task, events
-from hooks.listeners import *
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, "../..")))
 
+from hooks.listeners import *
+
+
 cwd = os.getcwd()
 json_path = "{}/scenarios/test_data".format(cwd)
 base_uri = "https://jsonplaceholder.typicode.com"
-
 
 
 def register_user(l, payload):
@@ -42,8 +43,6 @@ def delete_post(l, post_id):
     return l.client.delete(f'/posts/{post_id}')
 
 
-
-
 class UserScenario(TaskSet):
     uuid = 1
     post_id = 1
@@ -51,14 +50,14 @@ class UserScenario(TaskSet):
     def setup(self):
         print("Setup Data!")
         self.uuid = register_user(self, open("{}/user.json".format(json_path))).json()['id']
-        print(f"Registered user: {self.uuid}.")
+        print("Registered user: {}.".format(self.uuid))
         self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid}).json()['id']
-        print(f"Registered Post: {self.post_id}.")
+        print("Registered Post: {}.".format(self.post_id))
 
     def teardown(self):
-        print(f"Deleting User: {self.uuid}")
+        print("Deleting User: {}".format(self.uuid))
         delete_user(self, self.uuid)
-        print(f"Deleting Post: {self.post_id}")
+        print("Deleting Post: {}".format(self.post_id))
         delete_post(self, self.post_id)
 
     def on_start(self):
@@ -93,8 +92,6 @@ class LoadTests(HttpLocust):
     min_wait = 1000
     max_wait = 2000
     stop_timeout = 20
-
-
 
 
 # Add listeners for Stress Tests quiting
