@@ -147,3 +147,14 @@ After slaves initialization, the testing will be started.
     -e "HATCH_RATE=20" \
     -e "LOCUST_TEST=LoadTests" \
     --network=locustnw locust-tasks:latest
+
+
+
+ docker run -it --rm -p=8089:8089 \
+    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+    -e "NUM_CLIENTS=100" \
+    -e "HATCH_RATE=20" \
+    -e "LOCUST_TEST=LoadTests" \
+    -e "LOCUST_MODE=master" \
+    -e "EXPECT_SLAVES=2" \
+    --network=locustnw locust-tasks:latest

@@ -50,14 +50,14 @@ class UserScenario(TaskSet):
     def setup(self):
         print("Setup Data!")
         self.uuid = register_user(self, open("{}/user.json".format(json_path))).json()['id']
-        print("Registered user: {}.".format(self.uuid))
+        print(f"Registered user: {self.uuid}.")
         self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid}).json()['id']
-        print("Registered Post: {}.".format(self.post_id))
+        print(f"Registered Post: {self.post_id}.")
 
     def teardown(self):
-        print("Deleting User: {}".format(self.uuid))
+        print(f"Deleting User: {self.uuid}")
         delete_user(self, self.uuid)
-        print("Deleting Post: {}".format(self.post_id))
+        print(f"Deleting Post: {self.post_id}")
         delete_post(self, self.post_id)
 
     def on_start(self):
@@ -91,7 +91,7 @@ class LoadTests(HttpLocust):
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000
-    stop_timeout = 20
+    stop_timeout = 30
 
 
 # Add listeners for Stress Tests quiting
