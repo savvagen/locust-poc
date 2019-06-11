@@ -32,7 +32,7 @@ subjects:
   namespace: locust
   name: default
 ---
-# ---- Create LOCUST Replication Controller ----
+# ---- Create LOCUST master Deployment ----
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
