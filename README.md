@@ -240,7 +240,7 @@ docker run -it --rm --name master --hostname master \
     -e "LOCUST_FILE=scenarios/random_scenarios.py" \
     -e "LOCUST_OPTS=-c 100 -r 20 --no-web --expect-slaves 2" \
     -e "LOCUST_TEST=LoadTests" \
-    savva/locust:latest
+    test/locust:latest
     
 docker run -it --rm --name slave1 --hostname slave1 \
     --link master --env NO_PROXY=master \
@@ -250,7 +250,7 @@ docker run -it --rm --name slave1 --hostname slave1 \
     -e "LOCUST_MASTER=master" \
     -e "LOCUST_FILE=scenarios/random_scenarios.py" \
     -e "LOCUST_TEST=LoadTests" \
-    savva/locust:latest
+    test/locust:latest
     
     
 docker run -it --rm --name slave2 --hostname slave2 \
@@ -261,7 +261,7 @@ docker run -it --rm --name slave2 --hostname slave2 \
     -e "LOCUST_MASTER=master" \
     -e "LOCUST_FILE=scenarios/random_scenarios.py" \
     -e "LOCUST_TEST=LoadTests" \
-    savva/locust:latest
+    test/locust:latest
 ```
     
   
