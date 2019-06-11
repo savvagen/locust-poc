@@ -1,0 +1,143 @@
+# ---- Create LOCUST namespace ----
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: locust
+---
+# ---- Create LOCUST cluster role binding ----
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: locust
+  name: locust
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - "*"
+  verbs:
+  - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: locust
+  namespace: locust
+roleRef:
+  kind: Role
+  name: locust
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  namespace: locust
+  name: default
+---
+# ---- Create LOCUST Replication Controller ----
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: locust-master
+  namespace: locust
+  labels:
+    name: locust
+    role: master
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: locust
+      labels:
+        name: locust
+        role: master
+    spec:
+      containers:
+        - name: locust-master
+          image: savvagenchevskiy/locust-tasks:latest
+          env:
+            - name: LOCUST_MODE
+              value: master
+            - name: TARGET_HOST
+              value: https://jsonplaceholder.typicode.com
+            - name: LOCUSTFILE_PATH
+              value: scenarios/random_scenarios.py
+            - name: LOCUST_TEST
+              value: LoadTests
+            - name: EXPECT_SLAVES
+              value: "4"
+#            - name: ADD_OPTIONS
+#              value: -c 100 -r 20 --no-web
+          ports:
+            - name: loc-master-web
+              containerPort: 8089
+              protocol: TCP
+            - name: loc-master-p1
+              containerPort: 5557
+              protocol: TCP
+            - name: loc-master-p2
+              containerPort: 5558
+              protocol: TCP
+            - name: loc-master-p3
+              containerPort: 5559
+              protocol: TCP
+            - name: loc-master-p4
+              containerPort: 5560
+              protocol: TCP
+            - name: loc-master-p5
+              containerPort: 5561
+              protocol: TCP
+            - name: loc-master-p6
+              containerPort: 5562
+              protocol: TCP
+            - name: loc-master-p7
+              containerPort: 5563
+              protocol: TCP
+#          ports:
+#            - containerPort: 8089
+---
+# ---- Create LOCUST Services ----
+kind: Service
+apiVersion: v1
+metadata:
+  name: locust-master
+  namespace: locust
+  labels:
+    name: locust
+    role: master
+spec:
+  ports:
+    - port: 8089
+      targetPort: loc-master-web
+      protocol: TCP
+      name: loc-master-web
+    - port: 5557
+      targetPort: loc-master-p1
+      protocol: TCP
+      name: loc-master-p1
+    - port: 5558
+      targetPort: loc-master-p2
+      protocol: TCP
+      name: loc-master-p2
+    - port: 5559
+      targetPort: loc-master-p3
+      protocol: TCP
+      name: loc-master-p3
+    - port: 5560
+      targetPort: loc-master-p4
+      protocol: TCP
+      name: loc-master-p4
+    - port: 5561
+      targetPort: loc-master-p5
+      protocol: TCP
+      name: loc-master-p5
+    - port: 5562
+      targetPort: loc-master-p6
+      protocol: TCP
+      name: loc-master-p6
+    - port: 5563
+      targetPort: loc-master-p7
+      protocol: TCP
+      name: loc-master-p7
+  selector:
+    name: locust
+    role: master
+  type: LoadBalancer

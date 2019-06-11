@@ -164,8 +164,19 @@ docker build -t locust-tasks:latest -f Dockerfile .
  docker run -it --rm -p=8089:8089 \
     -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
     -e "ADD_OPTIONS=-c 100 -r 20" \
+    -e "LOCUSTFILE_PATH=scenarios/random_scenarios.py" \
     -e "LOCUST_TEST=LoadTests" \
-    --network=locustnw locust-tasks:latest
+    --network=locustnw test/locust-tasks:latest
+    
+   OR
+   
+   docker run -it --rm -p=8089:8089 \
+    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+    -e "ADD_OPTIONS=-c 100 -r 20" \
+    -e "LOCUST_TEST=LoadTests" \
+    -e "LOCUSTFILE_PATH=scenarios/random_scenarios.py" \
+    test/locust-tasks:latest
+    
 
 ```
 
@@ -179,11 +190,12 @@ docker build -t locust-tasks:latest -f Dockerfile .
  
 docker run --name master --hostname master -it --rm -p=8089:8089 \
    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+   -e "LOCUSTFILE_PATH=scenarios/random_scenarios.py" \
    -e "LOCUST_TEST=LoadTests" \
    -e "LOCUST_MODE=master" \
    -e "EXPECT_SLAVES=2" \
    -e ADD_OPTIONS="-c 100 -r 20 --no-web" \
-   --network=locustnw locust-tasks:latest
+   --network=locustnw test/locust-tasks:latest
 
 
 ```
@@ -194,18 +206,20 @@ docker run --name master --hostname master -it --rm -p=8089:8089 \
 docker run --name slave1 -it --rm \
    --link master --env NO_PROXY=master \
    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+   -e "LOCUSTFILE_PATH=scenarios/random_scenarios.py" \
    -e "LOCUST_TEST=LoadTests" \
    -e "LOCUST_MODE=worker" \
    -e "LOCUST_MASTER=master" \
-   --network=locustnw locust-tasks:latest
+   --network=locustnw test/locust-tasks:latest
 
 docker run --name slave2 -it --rm \
    --link master --env NO_PROXY=master \
    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
+   -e "LOCUSTFILE_PATH=scenarios/random_scenarios.py" \
    -e "LOCUST_TEST=LoadTests" \
    -e "LOCUST_MODE=worker" \
    -e "LOCUST_MASTER=master" \
-   --network=locustnw locust-tasks:latest
+   --network=locustnw test/locust-tasks:latest
 
 ```
 
@@ -263,5 +277,23 @@ docker run -it --rm --name slave2 --hostname slave2 \
     -e "LOCUST_TEST=LoadTests" \
     test/locust:latest
 ```
-    
-  
+
+
+## Run Locust in Kubernetes cluster
+
+1. Setup kubectl configuration and connect to the cluster
+
+2. Deploy master container `locust-master` in separated `locust` namespace:
+
+``` 
+kubectl apply -f locust-master.yml
+
+```
+
+3. Deploy slaves using command:
+``` 
+kubectl apply -f locust-master.yml
+
+```
+4. Watch the Locust Web UI on the `locust-master` Service: `http://<load_balancer_ip>:8089`
+ 

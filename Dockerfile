@@ -1,13 +1,27 @@
+#FROM python:2.7.13
 FROM python:3
 
-COPY /docker-entrypoint.sh /
-COPY /requirements.txt /
+MAINTAINER Savva Genchevskiy
 
-RUN pip install -r requirements.txt \
-    && chmod +x /docker-entrypoint.sh
+# Add the external tasks directory into /locust-tasks
+RUN mkdir locust-tasks
+ADD /hooks /locust-tasks/hooks
+ADD /scenarios /locust-tasks/scenarios
+ADD /requirements.txt /locust-tasks/requirements.txt
+ADD /run.sh /locust-tasks/run.sh
 
-RUN  mkdir /locust
-WORKDIR /locust
-EXPOSE 8089 5557 5558
+WORKDIR /locust-tasks
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+# Install the required dependencies via pip
+RUN pip install -r /locust-tasks/requirements.txt
+
+# Set script to be executable
+RUN chmod 755 run.sh
+
+# Expose the required Locust ports
+EXPOSE 5557 5558 8089
+
+# Start Locust using LOCUS_OPTS environment variable
+ENTRYPOINT ["./run.sh"]
+
+#CMD /usr/local/bin/locust -f scenarios/random_scenarios.py $LOCUST_TEST --host=$TARGET_HOST -c $NUM_CLIENTS -r $HATCH_RATE --no-web

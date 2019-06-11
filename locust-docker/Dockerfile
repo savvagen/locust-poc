@@ -1,5 +1,4 @@
 #FROM python:2.7.13
-#FROM frolvlad/alpine-python3
 FROM python:3
 
 MAINTAINER Savva Genchevskiy
@@ -9,7 +8,7 @@ RUN mkdir locust-tasks
 ADD /hooks /locust-tasks/hooks
 ADD /scenarios /locust-tasks/scenarios
 ADD /requirements.txt /locust-tasks/requirements.txt
-ADD /locust-docker/run.sh /locust-tasks/run.sh
+ADD /run.sh /locust-tasks/run.sh
 
 WORKDIR /locust-tasks
 
