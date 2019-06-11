@@ -149,7 +149,9 @@ After slaves initialization, the testing will be started.
 
 2. Check network was created: `docker network inspect locustnw`
 
-3. Build Docker image `locust-tasks:latest` with command:
+
+3. Copy files from `locust-docker` dir to the project root directory. 
+Build Docker image `locust-tasks:latest` with command:
 ``` 
 docker build -t locust-tasks:latest -f Dockerfile .
 ```
@@ -206,3 +208,60 @@ docker run --name slave2 -it --rm \
    --network=locustnw locust-tasks:latest
 
 ```
+
+
+## Running Locust In Docker mounting scenarios in volumes
+Copy files from `locust-docker2` dir to the project root directory
+1. Building image: `docker build -t test/locust:latest -f Dockerfile .`
+
+2. Running simple web:
+``` 
+
+docker run -it --rm --name locust --hostname locust \
+    -p=8089:8089 \
+    -e "ATTACKED_HOST=https://jsonplaceholder.typicode.com" \
+    -e "LOCUST_FILE=scenarios/random_scenarios.py" \
+    -e "LOCUST_OPTS=-c 100 -r 20 --no-web" \
+    -e "LOCUST_TEST=LoadTests" \
+    -v `pwd`:/locust \
+    test/locust:latest
+    
+```
+    
+3. Running master with 2 slaves:
+
+``` 
+  
+docker run -it --rm --name master --hostname master \
+    -p=8089:8089 \
+    -v `pwd`:/locust \
+    -e "ATTACKED_HOST=https://jsonplaceholder.typicode.com" \
+    -e "LOCUST_MODE=master" \
+    -e "LOCUST_FILE=scenarios/random_scenarios.py" \
+    -e "LOCUST_OPTS=-c 100 -r 20 --no-web --expect-slaves 2" \
+    -e "LOCUST_TEST=LoadTests" \
+    savva/locust:latest
+    
+docker run -it --rm --name slave1 --hostname slave1 \
+    --link master --env NO_PROXY=master \
+    -v `pwd`:/locust \
+    -e "ATTACKED_HOST=https://jsonplaceholder.typicode.com" \
+    -e "LOCUST_MODE=slave" \
+    -e "LOCUST_MASTER=master" \
+    -e "LOCUST_FILE=scenarios/random_scenarios.py" \
+    -e "LOCUST_TEST=LoadTests" \
+    savva/locust:latest
+    
+    
+docker run -it --rm --name slave2 --hostname slave2 \
+    --link master --env NO_PROXY=master \
+    -v `pwd`:/locust \
+    -e "ATTACKED_HOST=https://jsonplaceholder.typicode.com" \
+    -e "LOCUST_MODE=slave" \
+    -e "LOCUST_MASTER=master" \
+    -e "LOCUST_FILE=scenarios/random_scenarios.py" \
+    -e "LOCUST_TEST=LoadTests" \
+    savva/locust:latest
+```
+    
+  

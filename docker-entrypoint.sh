@@ -10,7 +10,7 @@ if [ -z ${ATTACKED_HOST+x} ] ; then
     exit 1
 fi
 
-LOCUST_OPTS="-f ${LOCUST_FILE} --host=${ATTACKED_HOST} --no-reset-stats $LOCUST_OPTS"
+LOCUST_OPTS="-f ${LOCUST_FILE} $LOCUST_TEST --host=${ATTACKED_HOST} --no-reset-stats $LOCUST_OPTS"
 
 case `echo ${LOCUST_MODE} | tr 'a-z' 'A-Z'` in
 "MASTER")
@@ -27,4 +27,5 @@ case `echo ${LOCUST_MODE} | tr 'a-z' 'A-Z'` in
 esac
 
 cd /locust
+echo locust ${LOCUST_OPTS}
 locust ${LOCUST_OPTS}

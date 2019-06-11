@@ -1,6 +1,3 @@
-# https://medium.com/locust-io-experiments/locust-io-experiments-running-in-docker-cae3c7f9386e
-
-# FROM python:3.6-alpine
 FROM python:3
 
 COPY /docker-entrypoint.sh /
