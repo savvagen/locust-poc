@@ -1,8 +1,8 @@
 # ---- Create LOCUST namespace ----
-#apiVersion: v1
-#kind: Namespace
-#metadata:
-#  name: locust
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: locust
 ---
 # ---- Create LOCUST cluster role binding ----
 apiVersion: rbac.authorization.k8s.io/v1beta1
