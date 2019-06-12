@@ -3,4 +3,3 @@ wheel
 requests
 Faker
 locustio
-locust-nest
