@@ -18,12 +18,11 @@ def my_success_handler(request_type, name, response_time, response_length, **kw)
     # print("Total Request Number: \n {}".format(runners.global_stats.total.num_requests))
 
 
-
 def my_requests_number_handler(request_type, name, response_time, response_length, **kw):
     total_reqs = locust.runners.global_stats.total.num_requests
     # print("Successfully fetched: %s" % (name))
-    if total_reqs > 5000:
-        print("Stopping Requests! \n The Requests Number is > than {}. \n Stopping!".format(total_reqs))
+    if total_reqs > 500:
+        print("Stopping Requests! \n The Requests Number is: {}. \n Stopping!".format(total_reqs))
         runners.locust_runner.stop()
         runners.locust_runner.quit()
 

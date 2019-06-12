@@ -19,7 +19,7 @@ services:
       <<: *common-env
       LOCUST_MODE: master
       EXPECT_SLAVES: 2
-      ADD_OPTIONS: "--no-web -c 100 -r 20 -t30s --csv=report --logfile=locust.log"
+      ADD_OPTIONS: "--no-web -c 100 -r 20 --csv=report --logfile=locust.log"
     networks:
       - loadtest
     hostname: master
