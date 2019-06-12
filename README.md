@@ -56,6 +56,34 @@ class LoadTests(HttpLocust):
     stop_timeout = 30
 
 ```
+## Writing Task Sequence
+Let's create tasks to be executed in order according to @seq_task() priority:
+In this example tasks should be executed in such way as:
+1. get_all_posts()
+2. create_custom_post()
+3. watch_post() x 10
+
+``` 
+from locust import HttpLocust, task, events, seq_task, TaskSequence
+
+class UserScenario(TaskSequence):
+    @seq_task(1)
+    def get_all_posts(self):
+        self.client.get("/posts")
+
+    @seq_task(2)
+    def create_custom_post(self):
+        self.client.post("/posts", {"title": 'foo', "body": 'bar', "userId": self.uuid})
+
+    @seq_task(3)
+    @task(10)
+    def watch_post(self):
+        self.client.get("/posts/1")
+
+```
+
+In this example @task decorator can be used to show the number tasks to be executed one after another.
+Finally tasks will be executed in such order: first will be get_all_posts() --> second is create_custom_post() task --> and the last 10 times watch_post() task
 
 
 ### Running locust

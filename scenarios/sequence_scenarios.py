@@ -1,6 +1,6 @@
 import locust
 import os, sys
-from locust import TaskSet, Locust, HttpLocust, task, events, seq_task, TaskSequence
+from locust import HttpLocust, task, events, seq_task, TaskSequence
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
