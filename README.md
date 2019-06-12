@@ -1,5 +1,7 @@
 ### Locust Demo Project
 
+![](https://cdn2.hubspot.net/hubfs/208250/Blog_Images/locustjava1.png)
+
 ## Writing tasks
 1. Write your custom tasks using `TaskSet` class:
 ```
