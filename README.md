@@ -1,6 +1,8 @@
-### Locust Demo Project
+### Locust Demo Project - Part 2
 
 ![](https://cdn2.hubspot.net/hubfs/208250/Blog_Images/locustjava1.png)
+
+##### See more locust code examples in [Part 1](https://github.com/savvagen/locust-demo-project) 
 
 ## Writing tasks
 1. Write your custom tasks using `TaskSet` class:
