@@ -88,15 +88,16 @@ Finally tasks will be executed in such order: first will be get_all_posts() --> 
 
 ### Running locust
 ```
-locust --host https://jsonplaceholder.typicode.com -f locust_file.py WebsiteUser --no-web -c 5 -r 3 --run-time 30
+locust -f reporting_test.py --host https://jsonplaceholder.typicode.com --no-web -c 20 -r 2 -t30s --logfile=locust.log
 
 
 locust --host https://jsonplaceholder.typicode.com \      # Base URL
        -f locust_file.py WebsiteUser \                    # file with tasks and Test instance
        --no-web \                                         # without web console
        --csv=report                                       # will generate a report in csv format
-       -c 5 \                                             # specifies the number of Locust users to spawn
-       -r 3 \                                             # specifies the hatch rate (number of users to spawn per second).
+       --logfile=locust.log                               # will write locust tasks log to specific file
+       -c 20 \                                            # specifies the number of Locust users to spawn
+       -r 2 \                                             # specifies the hatch rate (number of users to spawn per second).
        --run-time 30 \                                    # if you want to specify the run time for a test
        --print-stats                                      # print statistics in the console
 

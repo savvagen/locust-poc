@@ -1,12 +1,12 @@
 version: "3.4"
 
 x-common: &common
-  image: locust-tasks:latest
+  image: savvagenchevskiy/locust-tasks:latest
   environment: &common-env
     TARGET_HOST: https://jsonplaceholder.typicode.com
     LOCUSTFILE_PATH: scenarios/random_scenarios.py
     LOCUST_TEST: LoadTests
-#  volumes:
+#  volumes: &common-volume
 #    - ../:/tests
 
 services:
@@ -19,7 +19,7 @@ services:
       <<: *common-env
       LOCUST_MODE: master
       EXPECT_SLAVES: 2
-      ADD_OPTIONS: "-c 100 -r 20 --no-web"
+      ADD_OPTIONS: "--no-web -c 100 -r 20 -t30s --csv=report --logfile=locust.log"
     networks:
       - loadtest
     hostname: master

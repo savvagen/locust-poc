@@ -91,7 +91,7 @@ class LoadTests(HttpLocust):
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000
-    stop_timeout = 30
+    # stop_timeout = 30
 
 
 # Add listeners for Stress Tests quiting
