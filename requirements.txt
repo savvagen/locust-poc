@@ -1,5 +1,6 @@
 setuptools
 wheel
 requests
-locustio
 Faker
+locustio
+locust-nest
