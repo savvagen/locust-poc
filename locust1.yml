@@ -1,0 +1,12 @@
+execution:
+- executor: locust
+  concurrency: 10
+  ramp-up: 1m
+  iterations: 1000
+  hold-for: 400m
+  scenario: locust-example
+
+scenarios:
+  locust-example:
+    default-address: https://jsonplaceholder.typicode.com
+    script: scenarios/other_samples/taurus_test.py
