@@ -1,3 +1,3 @@
 .idea/
 venv/
-locust2.yml
+locust-taurus/locust2.yml

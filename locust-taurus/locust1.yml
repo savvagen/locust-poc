@@ -9,4 +9,4 @@ execution:
 scenarios:
   locust-example:
     default-address: https://jsonplaceholder.typicode.com
-    script: scenarios/other_samples/taurus_test.py
+    script: taurus_test.py
