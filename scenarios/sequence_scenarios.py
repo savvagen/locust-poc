@@ -107,12 +107,10 @@ class UserScenario(TaskSequence):
     def watch_post(self):
         get_post(self, 1)
 
-
     @seq_task(4)
     def update_your_post(self):
         resp = self.client.put("/posts/1", data={"id": 1, "title": 'foo', "body": 'bar', "userId": self.uuid})
         print("Request: PUT {} | Status Code: {}".format(resp.url, resp.status_code))
-
 
     @seq_task(5)
     def patch_your_post(self):
