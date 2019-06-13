@@ -1,6 +1,7 @@
 setuptools
 wheel
 requests
-Faker
+selenium
 locustio
+Faker
 bzt

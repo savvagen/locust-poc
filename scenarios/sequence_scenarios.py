@@ -1,6 +1,7 @@
-import locust
-import os, sys
-from locust import HttpLocust, task, events, seq_task, TaskSequence
+import sys
+import os
+from locust import Locust, HttpLocust, events, task, TaskSequence, seq_task
+
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -13,9 +14,58 @@ json_path = "{}/scenarios/test_data".format(cwd)
 
 
 
-
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
 base_uri = "http://localhost:3000"
+
+
+
+def register_user(l, payload):
+    resp = l.client.post("/users", payload)
+    print("Request: POST {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def get_user(l, uuid):
+    resp = l.client.get('/users/{}'.format(uuid))
+    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def get_posts(l):
+    resp = l.client.get("/posts")
+    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def get_post(l, post_id):
+    resp = l.client.get("/posts/{}".format(post_id))
+    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def create_post(l, paylaod):
+    resp = l.client.post("/posts", data=paylaod)
+    print("Request: POST {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def update_post(l, post_id, payload):
+    resp = l.client.put("/posts/{}".format(post_id), data=payload)
+    print("Request: PUT {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def patch_post(l, post_id, payload):
+    resp = l.client.patch("/posts/{}".format(post_id), data=payload)
+    print("Request: PATHCH {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def delete_user(l, uuid):
+    resp = l.client.delete('/users/{}'.format(uuid))
+    print("Request: DELETE {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+def delete_post(l, post_id):
+    resp = l.client.delete('/posts/{}'.format(post_id))
+    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
+    return resp
+
+
+
 
 
 class UserScenario(TaskSequence):
@@ -31,48 +81,42 @@ class UserScenario(TaskSequence):
 
     def setup(self):
         print("Setup Data!")
-        resp = self.client.post("/users", open("{}/user.json".format(json_path)))
-        self.uuid = resp.json()['id']
-        print("Request: POST {} | Status Code: {}".format(resp.url, resp.status_code))
+        self.uuid = register_user(self, open("{}/user.json".format(json_path))).json()['id']
         print("Registered user: {}.".format(self.uuid))
+        self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid}).json()['id']
+        print("Registered Post: {}.".format(self.post_id))
 
 
     def teardown(self):
-        resp1 = self.client.delete('/users/{}'.format(self.uuid))
-        print("Request: DELETE {} | Status Code: {}".format(resp1.url, resp1.status_code))
         print("Deleting User: {}".format(self.uuid))
-        resp2 = self.client.delete("/posts/{}".format(self.post_id))
-        print("Request: DELETE {} | Status Code: {}".format(resp2.url, resp2.status_code))
-        print("Deleting Post: {}".format(self.post_id))
+        delete_user(self, self.uuid)
+        print("Deleting Post: {}".format(get_posts(self).json()[-1]['id']))
+        delete_post(self, get_posts(self).json()[-1]['id'])
 
 
     @seq_task(1)
     def get_all_posts(self):
-        resp = self.client.get("/posts")
-        print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
+        get_posts(self)
 
     @seq_task(2)
     def create_custom_post(self):
-        resp = self.client.post("/posts", {"title": 'foo', "body": 'bar', "userId": self.uuid})
-        print("Request: POST {} | Status Code: {}".format(resp.url, resp.status_code))
-        self.post_id = resp.json()['id']
+        create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid})
 
     @seq_task(3)
     @task(10)
     def watch_post(self):
-        resp = self.client.get("/posts/1")
-        print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
+        get_post(self, 1)
 
 
     @seq_task(4)
     def update_your_post(self):
-        resp = self.client.put(f"/posts/1", data={"id": 1, "title": 'foo', "body": 'bar', "userId": self.uuid})
+        resp = self.client.put("/posts/1", data={"id": 1, "title": 'foo', "body": 'bar', "userId": self.uuid})
         print("Request: PUT {} | Status Code: {}".format(resp.url, resp.status_code))
 
 
     @seq_task(5)
     def patch_your_post(self):
-        resp = self.client.patch(f"/posts/{self.post_id}", data={"body": "bar."})
+        resp = self.client.patch("/posts/{}".format(self.post_id), data={"body": "bar."})
         print("Request: PATCH | Status Code: {}".format(resp.url, resp.status_code))
 
 
