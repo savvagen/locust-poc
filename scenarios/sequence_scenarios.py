@@ -132,7 +132,7 @@ class LoadTests(HttpLocust):
 
 
 # Add listeners for Stress Tests quiting
-events.request_success += my_response_time_handler
+#events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
 
