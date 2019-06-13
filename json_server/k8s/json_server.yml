@@ -1,0 +1,93 @@
+# ---- Create LOCUST namespace ----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: json-server
+---
+# ---- Create LOCUST cluster role binding ----
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: json-server
+  name: json-server
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - "*"
+  verbs:
+  - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: json-server
+  namespace: json-server
+roleRef:
+  kind: Role
+  name: json-server
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  namespace: json-server
+  name: default
+#---
+# ---- Create json-server cluster resource limits ----
+#apiVersion: v1
+#kind: ResourceQuota
+#metadata:
+#  name: json-server-limits
+#  namespace: json-server
+#spec:
+#  hard:
+#    pods: "3"
+#    requests.memory: 200Mi
+#    requests.cpu: 1
+#    limits.memory: 250 Mi
+#    limits.cpu: 1.5
+#  scopes: ["NotTerminating"]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: json-server-deployment
+  namespace: json-server
+  labels:
+    app: json_server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: json_server
+  template:
+    metadata:
+      labels:
+        app: json_server
+    spec:
+      containers:
+      - name: json-server
+        image: savvagenchevskiy/json-server:latest
+        ports:
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "0.5"
+          limits:
+            memory: "70Mi"
+            cpu: "0.75"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: json-server
+  namespace: json-server
+  labels:
+    app: json_server
+spec:
+  ports:
+  - port: 3000
+    protocol: TCP
+  selector:
+    app: json_server
+  type: LoadBalancer

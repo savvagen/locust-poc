@@ -8,11 +8,16 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, "../..")))
 
 from hooks.listeners import *
-
-
 cwd = os.getcwd()
 json_path = "{}/scenarios/test_data".format(cwd)
-base_uri = "https://jsonplaceholder.typicode.com"
+
+
+
+
+
+# base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
+base_uri = "http://localhost:3000"
+
 
 
 def register_user(l, payload):
@@ -44,6 +49,7 @@ def delete_post(l, post_id):
 
 
 class UserScenario(TaskSet):
+
     uuid = 1
     post_id = 1
 
@@ -51,7 +57,7 @@ class UserScenario(TaskSet):
         print("Setup Data!")
         self.uuid = register_user(self, open("{}/user.json".format(json_path))).json()['id']
         print("Registered user: {}.".format(self.uuid))
-        self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid}).json()['id']
+        self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "author": self.uuid}).json()['id']
         print("Registered Post: {}.".format(self.post_id))
 
     def teardown(self):
@@ -75,11 +81,11 @@ class UserScenario(TaskSet):
 
     @task(3)
     def create_post(self):
-        create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid})
+        create_post(self, {"title": 'foo', "body": 'bar', "author": self.uuid})
 
     @task(3)
     def update_post(self):
-        update_post(self, 1, {"id": 1, "title": 'foo', "body": 'bar', "userId": self.uuid})
+        update_post(self, 1, {"id": 1, "title": 'foo', "body": 'bar', "author": self.uuid})
 
     @task(3)
     def patch_post(self):
@@ -95,7 +101,7 @@ class LoadTests(HttpLocust):
 
 
 # Add listeners for Stress Tests quiting
-events.request_success += my_success_handler
+#events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
 
@@ -103,5 +109,5 @@ events.request_success += my_requests_number_handler
 class StressTests(HttpLocust):
     host = base_uri
     task_set = UserScenario
-    min_wait = 1000
-    max_wait = 2000
+    min_wait = 100
+    max_wait = 200

@@ -1,0 +1,10 @@
+FROM node:9-stretch
+
+RUN npm install -g json-server@0.14
+
+COPY api /data
+WORKDIR /data
+VOLUME /data
+
+EXPOSE 8080
+ENTRYPOINT ["json-server", "--port","8080", "--watch", "/data/db.json", "--routes", "/data/routes.json", "--host", "0.0.0.0"]

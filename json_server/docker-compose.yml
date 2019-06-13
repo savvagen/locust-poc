@@ -1,7 +1,7 @@
 version: "3.5"
 services:
   json-server:
-    image: json-server:latest
+    image: my/json-server:latest
     ports:
       - "3000:3000"
     deploy:
