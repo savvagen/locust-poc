@@ -63,8 +63,8 @@ class UserScenario(TaskSet):
     def teardown(self):
         print("Deleting User: {}".format(self.uuid))
         delete_user(self, self.uuid)
-        print("Deleting Post: {}".format(self.post_id))
-        delete_post(self, self.post_id)
+        print("Deleting Post: {}".format(get_posts(self).json()[-1]['id']))
+        delete_post(self, get_posts(self).json()[-1]['id'])
 
     def on_start(self):
         print("Task Started!")
@@ -85,7 +85,7 @@ class UserScenario(TaskSet):
 
     @task(3)
     def update_post(self):
-        update_post(self, 1, {"id": 1, "title": 'foo', "body": 'bar', "userId": self.uuid})
+        update_post(self, self.post_id, {"id": self.post_id, "title": 'foo', "body": 'bar', "userId": self.uuid})
 
     @task(3)
     def patch_post(self):

@@ -8,7 +8,7 @@ module.exports = () => {
 
   // Create 100 users
   for (let i = 0; i < 100; i++) {
-    data.users.push({ id: i + 1, name: `user${i + 1}`, email: `user${i + 1}@test.com` })
+    data.users.push({ id: i + 1, name: `user${i + 1}`, username: `user_name${i + 1}`, email: `user${i + 1}@test.com` })
   }
 
 

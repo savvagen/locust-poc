@@ -53,7 +53,7 @@ class UserScenario(TaskSequence):
 
     @seq_task(2)
     def create_custom_post(self):
-        resp = self.client.post("/posts", {"title": 'foo', "body": 'bar', "author": self.uuid})
+        resp = self.client.post("/posts", {"title": 'foo', "body": 'bar', "userId": self.uuid})
         print("Request: POST {} | Status Code: {}".format(resp.url, resp.status_code))
         self.post_id = resp.json()['id']
 
@@ -66,7 +66,7 @@ class UserScenario(TaskSequence):
 
     @seq_task(4)
     def update_your_post(self):
-        resp = self.client.put(f"/posts/1", data={"id": 1, "title": 'foo', "body": 'bar', "author": self.uuid})
+        resp = self.client.put(f"/posts/1", data={"id": 1, "title": 'foo', "body": 'bar', "userId": self.uuid})
         print("Request: PUT {} | Status Code: {}".format(resp.url, resp.status_code))
 
 
