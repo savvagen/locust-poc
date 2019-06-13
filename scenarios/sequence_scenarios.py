@@ -1,6 +1,6 @@
 import sys
 import os
-from locust import Locust, HttpLocust, events, task, TaskSequence, seq_task
+from locust import Locust, HttpLocust, events, task, TaskSequence, seq_task, runners
 
 
 PACKAGE_PARENT = '..'
@@ -17,52 +17,51 @@ json_path = "{}/scenarios/test_data".format(cwd)
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
 base_uri = "http://localhost:3000"
 
+def trace(func):
+    def request_wrapper(*args, **kwargs):
+        r = func(*args, **kwargs)
+        runners.logger.info("Request: {} {} | Status Code: {}".format(func.__name__, r.url, r.status_code))
+        return r
+    return request_wrapper
 
 
+
+@trace
 def register_user(l, payload):
-    resp = l.client.post("/users", payload)
-    print("Request: POST {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.post("/users", payload)
 
+@trace
 def get_user(l, uuid):
-    resp = l.client.get('/users/{}'.format(uuid))
-    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.get('/users/{}'.format(uuid))
 
+@trace
 def get_posts(l):
-    resp = l.client.get("/posts")
-    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.get("/posts")
 
+@trace
 def get_post(l, post_id):
-    resp = l.client.get("/posts/{}".format(post_id))
-    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.get("/posts/{}".format(post_id))
 
+@trace
 def create_post(l, paylaod):
-    resp = l.client.post("/posts", data=paylaod)
-    print("Request: POST {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.post("/posts", data=paylaod)
 
+@trace
 def update_post(l, post_id, payload):
-    resp = l.client.put("/posts/{}".format(post_id), data=payload)
-    print("Request: PUT {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.put("/posts/{}".format(post_id), data=payload)
 
+@trace
 def patch_post(l, post_id, payload):
-    resp = l.client.patch("/posts/{}".format(post_id), data=payload)
-    print("Request: PATHCH {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.patch("/posts/{}".format(post_id), data=payload)
 
+@trace
 def delete_user(l, uuid):
-    resp = l.client.delete('/users/{}'.format(uuid))
-    print("Request: DELETE {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.delete('/users/{}'.format(uuid))
 
+@trace
 def delete_post(l, post_id):
-    resp = l.client.delete('/posts/{}'.format(post_id))
-    print("Request: GET {} | Status Code: {}".format(resp.url, resp.status_code))
-    return resp
+    return l.client.delete('/posts/{}'.format(post_id))
+
 
 
 
@@ -138,3 +137,16 @@ class StressTests(HttpLocust):
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000
+
+
+
+
+
+def trace(func):
+    def request_wrapper(*args, **kwargs):
+        r = func()
+        print("Request: {} {} | Status Code: {}".format(r.method, r.url, r.status_code))
+        return r
+    return request_wrapper
+
+

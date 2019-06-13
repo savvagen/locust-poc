@@ -1,6 +1,6 @@
 import locust
 import os, sys
-from locust import TaskSet, Locust, HttpLocust, task, events
+from locust import TaskSet, Locust, HttpLocust, task, events, runners
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -17,6 +17,9 @@ json_path = "{}/scenarios/test_data".format(cwd)
 
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
 base_uri = "http://localhost:3000"
+
+
+
 
 
 
@@ -46,6 +49,7 @@ def delete_user(l, uuid):
 
 def delete_post(l, post_id):
     return l.client.delete('/posts/{}'.format(post_id))
+
 
 
 class UserScenario(TaskSet):
@@ -93,7 +97,7 @@ class UserScenario(TaskSet):
 
 
 class LoadTests(HttpLocust):
-    # host = base_uri
+    host = base_uri
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000
