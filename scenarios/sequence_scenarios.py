@@ -78,7 +78,7 @@ class UserScenario(TaskSequence):
 
 
 class LoadTests(HttpLocust):
-    host = base_uri
+    # host = base_uri
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000
@@ -92,7 +92,7 @@ events.request_success += my_requests_number_handler
 
 
 class StressTests(HttpLocust):
-    host = base_uri
+    # host = base_uri
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000

@@ -57,7 +57,7 @@ class UserScenario(TaskSet):
         print("Setup Data!")
         self.uuid = register_user(self, open("{}/user.json".format(json_path))).json()['id']
         print("Registered user: {}.".format(self.uuid))
-        self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "author": self.uuid}).json()['id']
+        self.post_id = create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid}).json()['id']
         print("Registered Post: {}.".format(self.post_id))
 
     def teardown(self):
@@ -81,11 +81,11 @@ class UserScenario(TaskSet):
 
     @task(3)
     def create_post(self):
-        create_post(self, {"title": 'foo', "body": 'bar', "author": self.uuid})
+        create_post(self, {"title": 'foo', "body": 'bar', "userId": self.uuid})
 
     @task(3)
     def update_post(self):
-        update_post(self, 1, {"id": 1, "title": 'foo', "body": 'bar', "author": self.uuid})
+        update_post(self, 1, {"id": 1, "title": 'foo', "body": 'bar', "userId": self.uuid})
 
     @task(3)
     def patch_post(self):
@@ -93,7 +93,7 @@ class UserScenario(TaskSet):
 
 
 class LoadTests(HttpLocust):
-    host = base_uri
+    # host = base_uri
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000
@@ -107,7 +107,7 @@ events.request_success += my_requests_number_handler
 
 
 class StressTests(HttpLocust):
-    host = base_uri
+    # host = base_uri
     task_set = UserScenario
     min_wait = 100
     max_wait = 200
