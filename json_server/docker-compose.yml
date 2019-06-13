@@ -19,6 +19,7 @@ services:
         window: 15s
     networks:
       - performance
+    hostname: json-server
     container_name: json-server
 networks:
   performance:

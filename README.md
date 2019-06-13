@@ -199,16 +199,16 @@ docker build -t locust-tasks:latest -f Dockerfile .
     -e "ADD_OPTIONS=-c 100 -r 20" \
     -e "LOCUSTFILE_PATH=scenarios/random_scenarios.py" \
     -e "LOCUST_TEST=LoadTests" \
-    --network=locustnw test/locust-tasks:latest
+    --network=locustnw savvagenchevskiy/locust-tasks:latest
     
-   OR
+   OR Connect and Test the existing json-server container with json_server_performance network
    
    docker run -it --rm -p=8089:8089 \
-    -e "TARGET_HOST=https://jsonplaceholder.typicode.com" \
-    -e "ADD_OPTIONS=-c 100 -r 20" \
+    -e "TARGET_HOST=http://json-server:3000" \
+    -e "ADD_OPTIONS=--no-web -c 100 -r 20 -t30s" \
     -e "LOCUST_TEST=LoadTests" \
-    -e "LOCUSTFILE_PATH=scenarios/random_scenarios.py" \
-    test/locust-tasks:latest
+    -e "LOCUSTFILE_PATH=scenarios/sequence_scenarios.py" \
+    --network=json_server_performance savvagenchevskiy/locust-tasks:latest
     
 
 ```
@@ -228,7 +228,7 @@ docker run --name master --hostname master -it --rm -p=8089:8089 \
    -e "LOCUST_MODE=master" \
    -e "EXPECT_SLAVES=2" \
    -e ADD_OPTIONS="-c 100 -r 20 --no-web" \
-   --network=locustnw test/locust-tasks:latest
+   --network=locustnw savvagenchevskiy/locust-tasks:latest
 
 
 ```
@@ -243,7 +243,7 @@ docker run --name slave1 -it --rm \
    -e "LOCUST_TEST=LoadTests" \
    -e "LOCUST_MODE=worker" \
    -e "LOCUST_MASTER=master" \
-   --network=locustnw test/locust-tasks:latest
+   --network=locustnw savvagenchevskiy/locust-tasks:latest
 
 docker run --name slave2 -it --rm \
    --link master --env NO_PROXY=master \
@@ -252,7 +252,7 @@ docker run --name slave2 -it --rm \
    -e "LOCUST_TEST=LoadTests" \
    -e "LOCUST_MODE=worker" \
    -e "LOCUST_MASTER=master" \
-   --network=locustnw test/locust-tasks:latest
+   --network=locustnw savvagenchevskiy/locust-tasks:latest
 
 ```
 
@@ -330,3 +330,5 @@ kubectl apply -f locust-master.yml
 ```
 4. Watch the Locust Web UI on the `locust-master` Service: `http://<load_balancer_ip>:8089`
  
+
+
