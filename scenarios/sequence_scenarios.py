@@ -17,6 +17,11 @@ json_path = "{}/scenarios/test_data".format(cwd)
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
 base_uri = "http://localhost:3000"
 
+
+"""
+@trace Decorator is used to return the response data
+and method name to the test log.
+"""
 def trace(func):
     def request_wrapper(*args, **kwargs):
         r = func(*args, **kwargs)
