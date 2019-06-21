@@ -13,12 +13,8 @@ json_path = "{}/scenarios/test_data".format(cwd)
 
 
 
-
-
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
 base_uri = "http://localhost:3000"
-
-
 
 
 
@@ -105,13 +101,13 @@ class LoadTests(HttpLocust):
 
 
 # Add listeners for Stress Tests quiting
-#events.request_success += my_response_time_handler
+events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
 
 
 class StressTests(HttpLocust):
-    # host = base_uri
+    host = base_uri
     task_set = UserScenario
     min_wait = 100
     max_wait = 200

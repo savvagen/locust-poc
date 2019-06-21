@@ -1,5 +1,18 @@
 ### Locust Demo Project - Part 2
 
+### Environment preparation
+Install virtualenv to current project(python 3 is required):
+``` 
+### Initialise the virtual environment in the current dirrectory
+python3 -m venv $(pwd)/venv
+
+### Install all libs to the virtual environment
+pip3 install -r requirements.txt
+
+```
+
+
+
 ![](https://cdn2.hubspot.net/hubfs/208250/Blog_Images/locustjava1.png)
 
 ##### See more locust code examples in [Part 1](https://github.com/savvagen/locust-demo-project) 
