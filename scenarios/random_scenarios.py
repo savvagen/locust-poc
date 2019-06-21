@@ -1,5 +1,5 @@
 import locust
-import os, sys
+import os, sys, random
 from locust import TaskSet, Locust, HttpLocust, task, events, runners
 
 PACKAGE_PARENT = '..'
@@ -100,6 +100,7 @@ class LoadTests(HttpLocust):
     task_set = UserScenario
     min_wait = 1000
     max_wait = 2000
+    # wait_function = lambda self: random.expovariate(1)*1000
     stop_timeout = 30
 
     def setup(self):
@@ -110,13 +111,14 @@ class LoadTests(HttpLocust):
 
 
 # Add listeners for Stress Tests quiting
-events.request_success += my_response_time_handler
+# events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
+events.hatch_complete += clients_count_listener
 
 
-# class StressTests(HttpLocust):
-#     host = base_uri
-#     task_set = UserScenario
-#     min_wait = 100
-#     max_wait = 200
+class StressTests(HttpLocust):
+    host = base_uri
+    task_set = UserScenario
+    min_wait = 100
+    max_wait = 200
