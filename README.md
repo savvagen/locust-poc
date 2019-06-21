@@ -3,10 +3,13 @@
 ### Environment preparation
 Install virtualenv to current project(python 3 is required):
 ``` 
-### Initialise the virtual environment in the current dirrectory
+########### Install virtualenv
+pip install virtualenv
+
+######### Initialise the virtual environment in the current dirrectory
 python3 -m venv $(pwd)/venv
 
-### Install all libs to the virtual environment
+###### Install all libs to the virtual environment
 pip3 install -r requirements.txt
 
 ```
