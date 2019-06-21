@@ -15,7 +15,10 @@ json_path = "{}/scenarios/test_data".format(cwd)
 
 
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
-base_uri = "http://localhost:3000"
+# base_uri = "http://localhost:3000"
+base_uri = os.environ.get('BASE_URI', 'BASE_URI variable is not set!')
+
+
 
 
 """
@@ -145,13 +148,5 @@ class StressTests(HttpLocust):
 
 
 
-
-
-def trace(func):
-    def request_wrapper(*args, **kwargs):
-        r = func()
-        print("Request: {} {} | Status Code: {}".format(r.method, r.url, r.status_code))
-        return r
-    return request_wrapper
 
 

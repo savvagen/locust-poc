@@ -53,6 +53,7 @@ class UserScenario(TaskSet):
     uuid = 1
     post_id = 1
 
+    # is called once when task-set is starting
     def setup(self):
         print("Setup Data!")
         self.uuid = register_user(self, open("{}/user.json".format(json_path))).json()['id']
@@ -66,9 +67,11 @@ class UserScenario(TaskSet):
         print("Deleting Post: {}".format(get_posts(self).json()[-1]['id']))
         delete_post(self, get_posts(self).json()[-1]['id'])
 
+    # is called when a simulated user starts executing
     def on_start(self):
-        print("Task Started!")
+        print("User Started!")
 
+    # is called when the TaskSet is stopped
     def on_stop(self):
         print("Task Stoped!")
 
@@ -99,6 +102,12 @@ class LoadTests(HttpLocust):
     max_wait = 2000
     stop_timeout = 30
 
+    def setup(self):
+        print("Starting LoadTests !!!!")
+
+    def teardonw(self):
+        print("Stopping LoadTests !!!")
+
 
 # Add listeners for Stress Tests quiting
 events.request_success += my_response_time_handler
@@ -106,8 +115,8 @@ events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
 
 
-class StressTests(HttpLocust):
-    host = base_uri
-    task_set = UserScenario
-    min_wait = 100
-    max_wait = 200
+# class StressTests(HttpLocust):
+#     host = base_uri
+#     task_set = UserScenario
+#     min_wait = 100
+#     max_wait = 200

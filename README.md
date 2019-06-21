@@ -123,6 +123,12 @@ locust --host https://jsonplaceholder.typicode.com \      # Base URL
 
 ```
 
+### Running locust command with environment variables
+
+``` 
+env BASE_URI=http://localhost:3000 locust -f scenarios/sequence_scenarios.py LoadTests --no-web -c 100 -r 20
+
+```
 
 ### Run tests from slaves
 
