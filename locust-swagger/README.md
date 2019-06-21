@@ -15,6 +15,8 @@ Best option is:
 Generate locust file:
 
 ``` 
-swagger2locust ./swagger.json > ./locustfile.py
+cd locust-swagger
+
+swagger2locust ./swagger.json > ../scenarios/my_locustfile.py
 
 ```
