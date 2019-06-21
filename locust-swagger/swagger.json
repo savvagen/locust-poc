@@ -1,0 +1,405 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "v1",
+    "title": "User Service",
+    "description": "User microservice Core Web API",
+    "termsOfService": "",
+    "contact": {
+      "name": "Earnin",
+      "url": "https://www.earnin.com/",
+      "email": "contact@earnin.com"
+    }
+  },
+  "basePath": "/svc-gateway/svc-user",
+  "paths": {
+    "/user/{userId}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get User by Id",
+        "operationId": "GetUser",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/guid/{publicUserGuid}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get user by PublicUserGuid",
+        "operationId": "GetUserByPublicUserGuid",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "publicUserGuid",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    },
+    "/user/{userId}/employment": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get Current Employment Detail For User",
+        "operationId": "GetEmploymentDetail",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "asOfDate",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/UserEmploymentDetail"
+            }
+          },
+          "404": {
+            "description": "Employment entity has missing"
+          }
+        }
+      }
+    },
+    "/user/{userId}/employmentdetails": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get employment details for user",
+        "operationId": "GetEmploymentDetails",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "uniqueItems": false,
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserEmploymentDetail"
+              }
+            }
+          },
+          "404": {
+            "description": "Employment details was not found"
+          }
+        }
+      }
+    },
+    "/user/{userId}/employer": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Get Employer For User",
+        "operationId": "GetUserEmployer",
+        "consumes": [],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "lastUpdatedOnOrLater",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/Employer"
+            }
+          },
+          "404": {
+            "description": "Employer not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "User": {
+      "required": [
+        "userId",
+        "username",
+        "firstName",
+        "lastName",
+        "statusId",
+        "createdOn",
+        "maxLimit",
+        "publicUserGuid",
+        "identityRiskUserName",
+        "publicUserId"
+      ],
+      "type": "object",
+      "properties": {
+        "userId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "username": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "statusId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "createdOn": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "isEnrolledInInstantEarnings": {
+          "type": "boolean"
+        },
+        "maxLimit": {
+          "format": "decimal",
+          "type": "number"
+        },
+        "publicUserGuid": {
+          "type": "string"
+        },
+        "identityRiskUserName": {
+          "type": "string"
+        },
+        "publicUserId": {
+          "type": "string",
+          "readOnly": true
+        },
+        "oAuthProviderId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "thirdPartyUserId": {
+          "type": "string"
+        },
+        "depositsDetected": {
+          "type": "boolean"
+        }
+      }
+    },
+    "UserEmploymentDetail": {
+      "required": [
+        "userEmploymentId"
+      ],
+      "type": "object",
+      "properties": {
+        "userEmploymentId": {
+          "format": "int64",
+          "type": "integer"
+        },
+        "employerName": {
+          "type": "string"
+        },
+        "userId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "employerId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "employeeId": {
+          "type": "string"
+        },
+        "hourRate": {
+          "format": "decimal",
+          "type": "number"
+        },
+        "averagePay": {
+          "format": "decimal",
+          "type": "number"
+        },
+        "payrollUserName": {
+          "type": "string"
+        },
+        "payrollPassword": {
+          "type": "string"
+        },
+        "payType": {
+          "enum": [
+            "Unspecified",
+            "Hourly",
+            "Salary",
+            "GovtBenefits",
+            "Other",
+            "Marketplace"
+          ],
+          "type": "string"
+        },
+        "department": {
+          "type": "string"
+        },
+        "hireDate": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "supervisor": {
+          "type": "string"
+        },
+        "lastUpdatedOn": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "commuteTypeId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "timesheetTypeId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "minPayCheckAmount": {
+          "format": "decimal",
+          "type": "number"
+        }
+      }
+    },
+    "Employer": {
+      "required": [
+        "employerId",
+        "employerName",
+        "createdOn",
+        "notSupported"
+      ],
+      "type": "object",
+      "properties": {
+        "employerId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "employerName": {
+          "type": "string"
+        },
+        "createdOn": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "allowAutomaticPayrollSetup": {
+          "type": "boolean"
+        },
+        "categoryId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "notSupported": {
+          "type": "boolean"
+        },
+        "minPayCheckAmount": {
+          "format": "decimal",
+          "type": "number"
+        },
+        "defaultHourlyRate": {
+          "format": "decimal",
+          "type": "number"
+        },
+        "minNumberDeposits": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "defaultPayCycleFrequencyId": {
+          "format": "int32",
+          "type": "integer"
+        },
+        "riskLimitOverride": {
+          "format": "decimal",
+          "type": "number"
+        },
+        "logoUrl": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

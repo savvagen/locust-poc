@@ -15,8 +15,8 @@ json_path = "{}/scenarios/test_data".format(cwd)
 
 
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
-# base_uri = "http://localhost:3000"
-base_uri = os.environ.get('BASE_URI', 'BASE_URI variable is not set!')
+# base_uri = os.environ.get('BASE_URI', 'BASE_URI variable is not set!')
+base_uri = "http://localhost:3000"
 
 
 
