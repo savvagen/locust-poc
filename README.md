@@ -12,7 +12,6 @@ pip3 install -r requirements.txt
 ```
 
 
-
 ![](https://cdn2.hubspot.net/hubfs/208250/Blog_Images/locustjava1.png)
 
 ##### See more locust code examples in [Part 1](https://github.com/savvagen/locust-demo-project) 
