@@ -72,9 +72,6 @@ def delete_post(l, post_id):
 
 
 
-
-
-
 class UserScenario(TaskSequence):
     """
     In the above example, the order is defined to execute get_all_posts(),
@@ -137,7 +134,7 @@ class LoadTests(HttpLocust):
 # Add listeners for Stress Tests quiting
 events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
-#events.request_success += my_requests_number_handler
+events.request_success += my_requests_number_handler
 
 
 class StressTests(HttpLocust):

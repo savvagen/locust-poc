@@ -1,7 +1,7 @@
 import locust
 import gevent
 from locust.events import EventHook
-from locust import runners
+from locust import runners, events
 
 
 # Hooks asnd Conditions for Stress Testing quiting
@@ -14,7 +14,6 @@ def my_response_time_handler(request_type, name, response_time, response_length,
             "STOPPING TESTS!!! Response time is {} ms. The maximal resp. time is 4000 ms".format(response_time))
         runners.locust_runner.stop()
         runners.locust_runner.quit()
-
     # print("Stats: \n {}".format(runners.global_stats.__dict__))
     # print("Start Time: \n {}".format(runners.global_stats.start_time))
     # print("Total Request Number: \n {}".format(runners.global_stats.total.num_requests))
@@ -37,16 +36,3 @@ def my_error_handler(request_type, name, response_time, exception, **kw):
         runners.logger.error("STOPPING TESTS!!! ERROR FOUND: {}".format(exception))
         runners.locust_runner.stop()
         runners.locust_runner.quit()
-
-
-# hatch_complete
-def clients_count_listener(user_count, **kw):
-    rps_count = runners.global_stats.total.total_rps
-    if rps_count < 100:
-        runners.locust_runner.user_count += 1
-        #runners.locust_runner.num_clients += 1
-        #runners.locust_runner.start_hatching(user_count + 1)
-    elif rps_count > 100:
-        runners.locust_runner.user_count -= 1
-        #runners.locust_runner.start_hatching(user_count - 1)
-

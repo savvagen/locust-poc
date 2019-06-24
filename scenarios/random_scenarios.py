@@ -95,26 +95,27 @@ class UserScenario(TaskSet):
         patch_post(self, self.post_id, {"body": "bar."})
 
 
-class LoadTests(HttpLocust):
-    host = base_uri
-    task_set = UserScenario
-    min_wait = 1000
-    max_wait = 2000
-    # wait_function = lambda self: random.expovariate(1)*1000
-    stop_timeout = 30
-
-    def setup(self):
-        print("Starting LoadTests !!!!")
-
-    def teardonw(self):
-        print("Stopping LoadTests !!!")
 
 
 # Add listeners for Stress Tests quiting
 # events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
-events.hatch_complete += clients_count_listener
+
+
+class LoadTests(HttpLocust):
+    host = base_uri
+    task_set = UserScenario
+    min_wait = 1000
+    max_wait = 2000
+    # wait_function = lambda self: random.expovariate(1)*1000
+    # stop_timeout = 30
+
+    def setup(self):
+        print("Starting Load Tests !!!!")
+
+    def teardonw(self):
+        print("Stopping Load Tests !!!")
 
 
 class StressTests(HttpLocust):
@@ -122,3 +123,9 @@ class StressTests(HttpLocust):
     task_set = UserScenario
     min_wait = 100
     max_wait = 200
+
+    def setup(self):
+        print("Starting Stress Tests !!!!")
+
+    def teardonw(self):
+        print("Stopping Stress Tests !!!")
