@@ -1,6 +1,4 @@
 import locust
-import gevent
-from locust.events import EventHook
 from locust import runners, events
 
 
