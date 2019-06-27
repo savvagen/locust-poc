@@ -1,5 +1,5 @@
 execution:
-  scenario: test_posts
+  scenario: get_posts
   concurrency: 200
   ramp-up: 40s
   iterations: 1000
