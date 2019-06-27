@@ -1,0 +1,12 @@
+execution:
+- executor: locust
+  concurrency: 10
+  ramp-up: 30s
+  iterations: 1000
+  hold-for: 1m30s
+  scenario: locust-example
+
+scenarios:
+  locust-example:
+    default-address: http://localhost:3000
+    script: ../scenarios/taurus_tests.py

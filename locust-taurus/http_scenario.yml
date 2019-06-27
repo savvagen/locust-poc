@@ -1,0 +1,57 @@
+execution:
+  scenario: test_posts
+  concurrency: 200
+  ramp-up: 40s
+  iterations: 1000
+  hold-for: 2m30s
+  throughput: 100
+  steps: 4
+
+scenarios:
+
+  get_posts:
+    timeout: 10  #  global scenario timeout for connecting, receiving results, 30 seconds by default
+    think-time: 100ms  # global scenario delay between each request
+    default-address: http://localhost:3000  # specify a base address, so you can use short urls in requests
+    keepalive: true  # flag to use HTTP keep-alive for connections, default is true
+    requests:
+    - url: /posts/1
+      method: get
+    - url: /posts
+      method: get
+
+#  create_post:
+#    default-address: http://localhost:3000
+#    requests:
+#    - url: /posts
+#      method: POST
+#      body:
+#        title: foo
+#        body: bar
+#        userId: 1
+#      extract-jsonpath:
+#        status_code: $.meta.code
+#        post_id: $.data.id
+#
+#  create_user:
+#    default-address: http://localhost:3000
+#    requests:
+#    - url: /users
+#      method: POST
+#      body:
+#        name: test
+#        username: test
+#        email: test@gmail.com
+#      extract-jsonpath:
+#        status_code: $.meta.code
+#        user_id: $.data.id
+#
+#  test_posts:
+#    default-address: http://localhost:3000
+#    requests:
+#    - include-scenario: create_post
+#    - include-scenario: create_user
+#    - url: /posts/${post_id}
+#      method: GET
+#    - url: /posts
+#      method: GET

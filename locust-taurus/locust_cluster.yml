@@ -1,0 +1,16 @@
+execution:
+- distributed:
+  - ip1
+  - ip2
+  executor: locust
+  concurrency: 1
+  ramp-up: 20s
+  iterations: 10
+  scenario: example
+  master: True
+  slaves: 1
+
+scenarios:
+  example:
+  default-address: http://example.com
+  script: sample.py
