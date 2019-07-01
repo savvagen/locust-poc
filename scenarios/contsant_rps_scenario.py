@@ -1,5 +1,6 @@
 import locust
-import os, sys, random
+from statistics import median
+import os, sys, random, json
 from locust import TaskSet, Locust, HttpLocust, task, events, runners
 
 PACKAGE_PARENT = '..'
@@ -8,48 +9,51 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, "../..")))
 
 from hooks.listeners import *
+
 cwd = os.getcwd()
 json_path = "{}/scenarios/test_data".format(cwd)
-
-
 
 # base_uri = "https://jsonplaceholder.typicode.com" ## Live JSON_PLACEHOLDER
 base_uri = "http://localhost:3000"
 
 
-
-
 def register_user(l, payload):
     return l.client.post("/users", payload)
+
 
 def get_user(l, uuid):
     return l.client.get('/users/{}'.format(uuid))
 
+
 def get_posts(l):
     return l.client.get("/posts")
+
 
 def get_post(l, post_id):
     return l.client.get("/posts/{}".format(post_id))
 
+
 def create_post(l, paylaod):
     return l.client.post("/posts", data=paylaod)
+
 
 def update_post(l, post_id, payload):
     return l.client.put("/posts/{}".format(post_id), data=payload)
 
+
 def patch_post(l, post_id, payload):
     return l.client.patch("/posts/{}".format(post_id), data=payload)
 
+
 def delete_user(l, uuid):
     return l.client.delete('/users/{}'.format(uuid))
+
 
 def delete_post(l, post_id):
     return l.client.delete('/posts/{}'.format(post_id))
 
 
-
 class UserScenario(TaskSet):
-
     uuid = 1
     post_id = 1
 
@@ -66,15 +70,6 @@ class UserScenario(TaskSet):
         delete_user(self, self.uuid)
         print("Deleting Post: {}".format(get_posts(self).json()[-1]['id']))
         delete_post(self, get_posts(self).json()[-1]['id'])
-
-    # is called when a simulated user starts executing
-    def on_start(self):
-        print("User Started!")
-
-    # is called when the TaskSet is stopped
-    def on_stop(self):
-        print("Task Stoped!")
-
 
     tasks = {get_posts: 2}
 
@@ -97,35 +92,20 @@ class UserScenario(TaskSet):
 
 
 
+
 # Add listeners for Stress Tests quiting
 events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
+
+# RPS listeners WORKING ONLY WITH ONE NODE and MASTER mode
+events.report_to_master += on_report_to_master
+events.slave_report += on_slave_report
+events.slave_report += on_slave_report_latency_handler
 
 
 class LoadTests(HttpLocust):
     host = base_uri
     task_set = UserScenario
     min_wait = 1000
-    max_wait = 2000
-    # wait_function = lambda self: random.expovariate(1)*1000
-    # stop_timeout = 30
-
-    def setup(self):
-        print("Starting Load Tests !!!!")
-
-    def teardonw(self):
-        print("Stopping Load Tests !!!")
-
-
-class StressTests(HttpLocust):
-    host = base_uri
-    task_set = UserScenario
-    min_wait = 100
-    max_wait = 200
-
-    def setup(self):
-        print("Starting Stress Tests !!!!")
-
-    def teardonw(self):
-        print("Stopping Stress Tests !!!")
+    max_wait = 1000
