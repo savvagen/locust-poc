@@ -42,8 +42,6 @@ def my_error_handler(request_type, name, response_time, exception, **kw):
 
 
 
-
-
 total_rps_number = 0
 
 def set_rps_number(rps):
