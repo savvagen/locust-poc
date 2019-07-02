@@ -94,18 +94,39 @@ class UserScenario(TaskSet):
 
 
 # Add listeners for Stress Tests quiting
-events.request_success += my_response_time_handler
-events.request_failure += my_error_handler
-events.request_success += my_requests_number_handler
+# events.request_success += my_response_time_handler
+# events.request_failure += my_error_handler
+# events.request_success += my_requests_number_handler
 
 # RPS listeners WORKING ONLY WITH ONE NODE and MASTER mode
-events.report_to_master += on_report_to_master
-events.slave_report += on_slave_report
-events.slave_report += on_slave_report_latency_handler
+# events.report_to_master += on_report_to_master
+# events.slave_report += on_slave_report
+# events.slave_report += on_slave_report_latency_handler
+
+
 
 
 class LoadTests(HttpLocust):
     host = base_uri
     task_set = UserScenario
-    min_wait = 1000
-    max_wait = 1000
+    # min_wait = 1000
+    # max_wait = 1000
+    wait_function = lambda self: self.fixed_rps_wait_function(100)
+    # wait_function = lambda t: 900 if runners.global_stats.total.current_rps < 100 else 1100
+
+    def __init__(self):
+        super(LoadTests, self).__init__()
+        self.my_wait = 1000
+
+    def fixed_rps_wait_function(self, desired_rps):
+        # Will increase and decrease tasks wait time in range of 99.8 - 100.7 rps
+        current_rps = runners.global_stats.total.current_rps
+        if current_rps < desired_rps - 0.2:
+            # the minimum wait is 10 ms
+            if self.my_wait > 10:
+                self.my_wait -= 4
+        elif current_rps > desired_rps + 0.7:
+            self.my_wait += 4
+        # print("Current RPS: {}".format(current_rps))
+        # print("Default wait is: {}".format(self.my_wait))
+        return self.my_wait

@@ -53,6 +53,8 @@ def get_rps_number():
     return total_rps_number
 
 
+##### Every slave will spin up 2 users
+####### The users count and desire_rps should be counted according to the slaves number
 def on_report_to_master(client_id, data, **kw):
     # Executes before on_slave_report
     # Validate data statistics on slave
