@@ -3,7 +3,7 @@ execution:
   concurrency: 10
   ramp-up: 1m
   iterations: 1000
-  hold-for: 400m
+  hold-for: 2m30s
   scenario: locust-example
 
 scenarios:
