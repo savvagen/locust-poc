@@ -66,7 +66,7 @@ class LoadTests(HttpLocust):
     host = base_uri
     task_set = UserScenario
     # min_wait = 1000
-    # max_wait = 2000
+    # max_wait = 1000
     wait_function = lambda self: self.fixed_rps_wait_function(500)
     # wait_function = lambda t: 900 if runners.global_stats.total.current_rps < 100 else 1100
 
