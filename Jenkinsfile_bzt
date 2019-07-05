@@ -1,0 +1,49 @@
+stages {
+        stage('fetch git'){
+            git branch: 'performance_test', credentialsId: 'earnin-github-ci', url: 'https://github.com/savvagen/locust-poc.git'
+        }
+
+        stage('install venv'){
+            sh '''
+            pip install virtualenv
+            python3 -m venv $(pwd)/venv
+            pip3 install -r requirements.txt
+            locust --version
+            ls -l
+            locust --help
+            '''
+        }
+
+        stage('load testing'){
+            sh '''
+            bzt load_test/locust-taurus/load_tests.yml -report
+            '''
+
+
+        }
+
+        stage('generate performance report'){
+            perfReport excludeResponseTime: true,
+                filterRegex: '',
+                modePerformancePerTestCase: true,
+                modeThroughput: true,
+                percentiles: '0,10,20,30,40,50,90,100',
+                sourceDataFiles: 'locust-report.xml'
+
+        }
+
+        stage('generate plot report'){
+            plot csvFileName: 'plot-b6372e88-89b7-4699-ac81-a609dc22e779.csv',
+                csvSeries: [
+                    [
+                        displayTableFlag: false,
+                        exclusionValues: 'timeStamp',
+                        file: 'locust-report.csv',
+                        inclusionFlag: 'EXCLUDE_BY_STRING', url: ''
+                        ]
+                ], group: 'General performance graph',
+                style: 'line3d',
+                title: 'Taurus Performance test results'
+        }
+
+}
