@@ -15,11 +15,26 @@ json_path = "{}/test_data".format(cwd)
 base_uri = "http://localhost:3000"
 
 
+
+
+# Add listeners for Stress Tests quiting
+events.request_success += my_response_time_handler
+events.request_failure += my_error_handler
+# events.request_success += my_requests_number_handler
+
+# RPS listeners WORKING ONLY WITH ONE NODE and MASTER mode
+# events.report_to_master += on_report_to_master
+# events.slave_report += on_slave_report
+# events.slave_report += on_slave_report_latency_handler
+
+
+
+
 class UserScenario(TaskSet):
     uuid = 1
     post_id = 1
 
-    # is called once when task-set is starting
+
     def setup(self):
         print("Setup Data!")
         self.uuid = self.client.post("/users", open("{}/user.json".format(json_path))).json()['id']
@@ -29,8 +44,9 @@ class UserScenario(TaskSet):
         self.client.delete("/users/{}".format(self.uuid))
         self.lient.delete('/posts/{}'.format(self.client.get("/posts").json()[-1]['id']))
 
+
     @task(3)
-    def get_posts(self):
+    def get_publications(self):
         self.client.get("/posts")
 
     @task(2)
@@ -49,21 +65,6 @@ class UserScenario(TaskSet):
     @task(1)
     def patch_post(self):
         self.client.patch("/posts/{}".format(self.post_id), {"body": "bar."})
-
-
-
-
-
-
-# Add listeners for Stress Tests quiting
-events.request_success += my_response_time_handler
-events.request_failure += my_error_handler
-# events.request_success += my_requests_number_handler
-
-# RPS listeners WORKING ONLY WITH ONE NODE and MASTER mode
-# events.report_to_master += on_report_to_master
-# events.slave_report += on_slave_report
-# events.slave_report += on_slave_report_latency_handler
 
 
 class LoadTests(HttpLocust):
