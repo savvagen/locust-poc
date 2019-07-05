@@ -9,10 +9,10 @@ from locust.events import EventHook
 
 def my_response_time_handler(request_type, name, response_time, response_length, **kw):
     # print("Successfully fetched: %s" % (name))
-    if response_time > 4000:
-        print("Stopping Requests! \n The Response time is > than 4000 ms. \n Stopping!")
+    if response_time > 5000:
+        print("Stopping Requests! \n The Response time is > than 5000 ms. \n Stopping!")
         runners.logger.error(
-            "STOPPING TESTS!!! Response time is {} ms. The maximal resp. time is 4000 ms".format(response_time))
+            "STOPPING TESTS!!! Response time is {} ms. The maximal resp. time is 5000 ms".format(response_time))
         runners.locust_runner.stop()
         runners.locust_runner.quit()
     # print("Stats: \n {}".format(runners.global_stats.__dict__))
