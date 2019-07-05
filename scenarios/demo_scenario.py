@@ -15,9 +15,6 @@ json_path = "{}/test_data".format(cwd)
 base_uri = "http://localhost:3000"
 
 
-
-
-
 class UserScenario(TaskSet):
     uuid = 1
     post_id = 1
@@ -30,7 +27,7 @@ class UserScenario(TaskSet):
 
     def teardown(self):
         self.client.delete("/users/{}".format(self.uuid))
-        self.lient.delete('/posts/{}'.format(get_posts(self).json()[-1]['id']))
+        self.lient.delete('/posts/{}'.format(self.client.get("/posts").json()[-1]['id']))
 
     @task(3)
     def get_posts(self):
@@ -46,14 +43,12 @@ class UserScenario(TaskSet):
 
     @task(1)
     def update_post(self):
-        self.client.put("/posts/{}".format(self.post_id), {"id": self.post_id, "title": 'foo', "body": 'bar', "userId": self.uuid})
+        self.client.put("/posts/{}".format(self.post_id),
+                        {"id": self.post_id, "title": 'foo', "body": 'bar', "userId": self.uuid})
 
     @task(1)
     def patch_post(self):
         self.client.patch("/posts/{}".format(self.post_id), {"body": "bar."})
-
-
-
 
 
 # Add listeners for Stress Tests quiting
@@ -65,8 +60,6 @@ events.request_failure += my_error_handler
 # events.report_to_master += on_report_to_master
 # events.slave_report += on_slave_report
 # events.slave_report += on_slave_report_latency_handler
-
-
 
 
 class LoadTests(HttpLocust):
