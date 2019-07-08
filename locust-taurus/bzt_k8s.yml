@@ -1,0 +1,68 @@
+# ---- Create Taurus namespace ----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: taurus
+---
+# ---- Create Taurus Deployment ----
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: taurus-deployment
+  namespace: taurus
+  labels:
+    name: taurus
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: taurus-deployment
+      labels:
+        name: taurus
+    spec:
+      containers:
+        - name: taurus
+          image: blazemeter/taurus:latest
+          args: ["stress_test.yml"]
+        volumeMounts:
+          - name: test_file
+            mountPath: /bzt-configs
+    volumes:
+      - name: test_file
+        configMap:
+          name: test_file
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test_file
+  namespace: taurus
+data:
+  stress_test.yml: |
+    # JsonServer Stress Testing
+    execution:
+      scenario: system_test
+      concurrency: 2000
+      ramp-up: 30s
+      iterations: 1000 # limit scenario iterations number
+      hold-for: 1m30s # time to hold target concurrency
+      throughput: 2000 # max RPS count generated
+      steps: 4
+
+    scenarios:
+      system_test:
+        default-address: http://json-server:3000
+        timeout: 30  #  global scenario timeout for connecting, receiving results, 30 seconds by default
+        think-time: 500ms  # global scenario delay between each request
+        # keepalive: true  # flag to use HTTP keep-alive for connections, default is true
+        requests:
+          - /users
+          - /posts
+          - /posts/1
+
+    reporting:
+    - module: console
+    - module: blazemeter
+      report-name: JsonServer Stress Test
+      test: Stress Test
+      project: My Taurus Project

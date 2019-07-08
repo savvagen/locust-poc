@@ -1,0 +1,28 @@
+# JsonServer Stress Testing
+execution:
+  scenario: system_test
+  concurrency: 1000
+  ramp-up: 30s
+  hold-for: 1m30s # time to hold target concurrency
+  iterations: 10000 # limit scenario iterations number
+  throughput: 500 # max RPS count generated
+  steps: 4
+
+scenarios:
+  system_test:
+    default-address: http://${BASE_IP}:3000 # set your IP address or microservice ip address
+    requests:
+      - /users
+      - /posts
+      - /posts/1
+
+reporting:
+- module: console
+- module: blazemeter
+  report-name: JsonServer Stress Test
+  test: Stress Test
+  project: My Taurus Project
+
+settings:
+  env:
+    BASE_IP: <json-server-ip>
