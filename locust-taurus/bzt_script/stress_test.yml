@@ -10,7 +10,12 @@ execution:
 
 scenarios:
   system_test:
-    default-address: http://${BASE_IP}:3000 # set your IP address or microservice ip address
+    # default-address: http://${BASE_IP}:3000 # get variable from  "settings -> env"  block
+    default-address: http://${__env(BASE_IP)}:3000 # set your IP address from Jmeter function
+    # Use  __P(BASE_IP) , or __BeanShell(System.getenv("BASE_IP")) jmeter functions to get the variables
+    timeout: 30  #  global scenario timeout for connecting, receiving results, 30 seconds by default
+    think-time: 500ms  # global scenario delay between each request
+    keepalive: true  # flag to use HTTP keep-alive for connections, default is true
     requests:
       - /users
       - /posts
@@ -23,6 +28,6 @@ reporting:
   test: Stress Test
   project: My Taurus Project
 
-settings:
-  env:
-    BASE_IP: <json-server-ip>
+#settings:
+#  env:
+#    BASE_IP: localhost

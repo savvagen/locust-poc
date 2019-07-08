@@ -23,7 +23,7 @@ spec:
       containers:
         - name: taurus
           image: blazemeter/taurus:latest
-          args: ["stress_test.yml"]
+          # args: ["stress_test.yml"]
         volumeMounts:
           - name: test_file
             mountPath: /bzt-configs
