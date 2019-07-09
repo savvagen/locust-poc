@@ -9,13 +9,13 @@ from locust.events import EventHook
 
 def my_response_time_handler(request_type, name, response_time, response_length, **kw):
     # print("Successfully fetched: %s" % (name))
-    if response_time > 10000:
-        error_message = "STOPPING TESTS!!! Response time is {} ms. Max resp. time is 10000 ms".format(
+    if response_time > 4000:
+        error_message = "STOPPING TESTS!!! Response time is {} ms. Max resp. time is 4000 ms".format(
             response_time)
         runners.logger.error(error_message)
         events.locust_error.fire(locust_instance="Taurus Test", exception=error_message, tb=None)
         events.request_failure.fire(request_type="api_call", name=name, response_time=response_time,
-                                    exception="Request Failed! Response time is > than 10000 ms.")
+                                    exception="Request Failed! Response time is > than 4000 ms.")
         # Exit and stop locust
         # runners.locust_runner.stop()
         # runners.locust_runner.quit()
