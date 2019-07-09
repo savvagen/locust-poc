@@ -101,6 +101,7 @@ class UserScenario(TaskSet):
 events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
 events.request_success += my_requests_number_handler
+events.quitting += validate_results
 
 
 class LoadTests(HttpLocust):

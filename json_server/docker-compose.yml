@@ -4,19 +4,19 @@ services:
     image: my/json-server:latest
     ports:
       - "3000:3000"
-    deploy:
-      resources:
-        limits:
-          cpus: '0.50'
-          memory: 50M
-        reservations:
-          cpus: '0.25'
-          memory: 20M
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 15s
+#    deploy:
+#      resources:
+#        limits:
+#          cpus: '0.50'
+#          memory: 50M
+#        reservations:
+#          cpus: '0.25'
+#          memory: 20M
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 15s
     networks:
       - performance
     hostname: json-server

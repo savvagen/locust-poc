@@ -1,6 +1,5 @@
 import locust
-from statistics import median
-import os, sys, random, json
+import os, sys, random
 from locust import TaskSet, Locust, HttpLocust, task, events, runners
 
 PACKAGE_PARENT = '..'
@@ -9,18 +8,17 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, "../..")))
 
 from hooks.listeners import *
-
 cwd = os.getcwd()
-json_path = "{}/test_data".format(cwd)
+json_path = "{}/scenarios/test_data".format(cwd)
+
 base_uri = "http://localhost:3000"
-
-
 
 
 # Add listeners for Stress Tests quiting
 events.request_success += my_response_time_handler
 events.request_failure += my_error_handler
-# events.request_success += my_requests_number_handler
+events.request_success += my_requests_number_handler
+events.quitting += validate_results
 
 # RPS listeners WORKING ONLY WITH ONE NODE and MASTER mode
 # events.report_to_master += on_report_to_master
@@ -42,7 +40,7 @@ class UserScenario(TaskSet):
 
     def teardown(self):
         self.client.delete("/users/{}".format(self.uuid))
-        self.lient.delete('/posts/{}'.format(self.client.get("/posts").json()[-1]['id']))
+        self.client.delete('/posts/{}'.format(self.client.get("/posts").json()[-1]['id']))
 
 
     @task(3)

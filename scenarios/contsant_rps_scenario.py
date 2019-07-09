@@ -86,9 +86,10 @@ class UserScenario(TaskSet):
 
 
 # Add listeners for Stress Tests quiting
-# events.request_success += my_response_time_handler
-# events.request_failure += my_error_handler
-# events.request_success += my_requests_number_handler
+events.request_success += my_response_time_handler
+events.request_failure += my_error_handler
+events.request_success += my_requests_number_handler
+events.quitting += validate_results
 
 # RPS listeners WORKING ONLY WITH ONE NODE and MASTER mode
 # events.report_to_master += on_report_to_master

@@ -123,6 +123,13 @@ locust --host https://jsonplaceholder.typicode.com \      # Base URL
 
 ```
 
+# Run Demo Tests 
+
+``` 
+env MAX_LATENCY=5000 locust -f scenarios/demo_scenario.py --no-web -c 500 -r 10 -t1m
+
+```
+
 ### Running locust command with environment variables
 
 ``` 
