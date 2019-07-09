@@ -4,15 +4,18 @@ import locust, sys, os
 from locust import runners, events
 from locust.events import EventHook
 
+
 # Hooks asnd Conditions for Stress Testing quiting
 
 def my_response_time_handler(request_type, name, response_time, response_length, **kw):
     # print("Successfully fetched: %s" % (name))
-    if response_time > 500:
+    if response_time > 4000:
         print("Stopping Requests! \n The Response time is > than 4000 ms. \n Stopping!")
         error_message = "STOPPING TESTS!!! Response time is {} ms. The maximal resp. time is 4000 ms".format(response_time)
         runners.logger.error(error_message)
-        events.locust_error.fire(locust_instance="Taurus Test", exception=error_message, tb=None)
+        events.locust_error.fire(locust_instance="Taurus Test",
+                                 exception=error_message, tb=None,
+                                 name="test response_time listener")
         runners.locust_runner.stop()
         runners.locust_runner.quit()
         sys.exit(1)
@@ -26,12 +29,9 @@ def my_requests_number_handler(request_type, name, response_time, response_lengt
     # print("Successfully fetched: %s" % (name))
     if total_reqs > 100000:
         error_message = "Stopping Requests! \n The Requests Number is: {}. \n Stopping!".format(total_reqs)
-        runners.logger.error(error_message)
-        events.locust_error.fire(locust_instance="Taurus Test", exception=error_message, tb=None)
+        runners.logger.info(error_message)
         runners.locust_runner.stop()
         runners.locust_runner.quit()
-        sys.exit(1)
-
 
 def my_error_handler(request_type, name, response_time, exception, **kw):
     print("Got Exception: %s" % (exception))
@@ -39,24 +39,11 @@ def my_error_handler(request_type, name, response_time, exception, **kw):
     if total_failures >= 1:
         error_message = "STOPPING TESTS!!! ERROR FOUND: {}".format(exception)
         runners.logger.error(error_message)
-        events.locust_error.fire(locust_instance="Taurus Test", exception=error_message, tb=None)
+        events.locust_error.fire(locust_instance="Taurus Test",
+                                 exception=error_message, tb=None,
+                                 name="test error listener")
         runners.locust_runner.stop()
         runners.locust_runner.quit()
-        sys.exit(1)
-
-
-def validate_results():
-    failures_number = runners.global_stats.total.fail_ratio
-    max_latency = os.environ.get('MAX_LATENCY', 'MAX_LATENCY variable is not set!')
-    percentile_latancey = runners.global_stats.total.get_response_time_percentile(95)
-    print("Overall 95% latency: {}".format(runners.global_stats.total.get_response_time_percentile(95)))
-    print(failures_number)
-    if percentile_latancey > float(max_latency) or int(failures_number) > 0:
-        error_message = ("BUILD FAILED WITH CONDITIONS:"
-                             "\nExpected max latency: {} ms. Actual: {}ms"
-                             "\nExpected number of errors: 0. Actual: {}".format(max_latency, percentile_latancey, failures_number))
-        runners.logger.error(error_message)
-        events.locust_error.fire(locust_instance="Taurus Test", exception=error_message, tb=None)
         sys.exit(1)
 
 
