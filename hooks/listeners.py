@@ -52,15 +52,15 @@ def validate_results():
     error_count = runners.global_stats.num_failures
     percentile_latancey = runners.global_stats.total.get_response_time_percentile(95)
     print("Overall 95% latency: {}".format(runners.global_stats.total.get_response_time_percentile(95)))
-    if percentile_latancey > float(max_latency) or error_count > 1:
-        error_message = ("BUILD FAILED WITH CONDITIONS:"
-                         "\nExpected max latency: {} ms. Actual: {}ms"
-                         "\nExpected number of errors: 0. Actual: {}".format(max_latency, percentile_latancey,
-                                                                             error_count))
-        runners.logger.error(error_message)
-        events.locust_error.fire(locust_instance="LoadTest.class", exception=error_message, tb=None)
-        # sys.exit(1)
-
+    if percentile_latancey is not None:
+        if percentile_latancey > float(max_latency) or error_count > 1:
+            error_message = ("BUILD FAILED WITH CONDITIONS:"
+                             "\nExpected max latency: {} ms. Actual: {}ms"
+                             "\nExpected number of errors: 0. Actual: {}".format(max_latency, percentile_latancey,
+                                                                                 error_count))
+            runners.logger.error(error_message)
+            events.locust_error.fire(locust_instance="LoadTest.class", exception=error_message, tb=None)
+            # sys.exit(1)
 
 
 total_rps_number = 0
