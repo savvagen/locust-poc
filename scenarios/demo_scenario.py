@@ -9,7 +9,7 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, "../..")))
 
 from hooks.listeners import *
 cwd = os.getcwd()
-json_path = "{}/scenarios/test_data".format(cwd)
+json_path = "{}/test_data".format(cwd)
 
 base_uri = "http://localhost:3000"
 
