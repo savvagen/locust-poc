@@ -1,4 +1,3 @@
-
 # Generate Locust test using swagger.json
 https://github.com/lieldulev/swagger-to-locustfile
 
@@ -17,6 +16,24 @@ Generate locust file:
 ``` 
 cd locust-swagger
 
-swagger2locust ./swagger.json > ../scenarios/my_locustfile_generated.py
+swagger2locust ./swagger.json > ../scenarios/my_locustfile.py
 
+```
+
+
+
+# Generate Taurus YAML from swagger.json
+
+Install Bazemeter Taurus:
+``` 
+pip install bzt --user
+```
+Generate yaml file:
+``` 
+swagger2yaml -o my_scenario.yaml --scenarios-from-paths swagger.json
+
+```
+or using another output directory:
+``` 
+swagger2yaml --scenarios-from-paths swagger.json -o ../scenarios/my_scenario.yaml
 ```
