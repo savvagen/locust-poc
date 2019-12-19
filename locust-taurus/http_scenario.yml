@@ -8,7 +8,6 @@ execution:
   steps: 4
 
 scenarios:
-
   get_posts:
     timeout: 10  #  global scenario timeout for connecting, receiving results, 30 seconds by default
     think-time: 100ms  # global scenario delay between each request
