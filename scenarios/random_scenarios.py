@@ -1,6 +1,5 @@
-import locust
-import os, sys, random
-from locust import TaskSet, Locust, HttpLocust, task, events, runners
+import os, sys
+from locust import TaskSet, HttpLocust, task
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -68,12 +67,12 @@ class UserScenario(TaskSet):
         delete_post(self, get_posts(self).json()[-1]['id'])
 
     # is called when a simulated user starts executing
-    def on_start(self):
-        print("User Started!")
-
-    # is called when the TaskSet is stopped
-    def on_stop(self):
-        print("Task Stoped!")
+    # def on_start(self):
+    #     print("User Started!")
+    #
+    # # is called when the TaskSet is stopped
+    # def on_stop(self):
+    #     print("Task Stoped!")
 
 
     tasks = {get_posts: 2}
