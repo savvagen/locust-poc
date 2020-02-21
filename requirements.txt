@@ -1,12 +1,13 @@
 setuptools
 wheel
 requests
-locustio
-bzt
+# locustio==0.14.4
+locustio==0.13.5
+bzt==1.14.1
 locust-fixed-interval
 requests
 PyHamcrest
-pytest
+pytest==5.3.5
 behave
 PyHamcrest
 Faker
