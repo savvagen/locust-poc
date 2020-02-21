@@ -3,15 +3,14 @@ execution:
   concurrency: 15
   ramp-up: 5s
   hold-for:  10s
-  scenario: load-tests
+  scenario: load_test
 
 scenarios:
-  load-tests:
+  load_test:
     timeout: 30
     think-time: 1s
     default-address: http://localhost:3000
-    keepalive: true
-    script: ./locust_scenario.py
+    script: locust_scenario.py
 
 reporting:
 - module: console
