@@ -8,9 +8,7 @@ class TestScenario(TaskSet):
 
     @task
     def get_user(self):
-       with self.client.get("/users/test") as response:
-           if response.status_code == 404:
-            response.failure("Got wrong response")
+        self.client.get("/users/test")
 
 class LocustRunner(HttpLocust):
     task_set = TestScenario
