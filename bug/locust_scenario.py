@@ -8,7 +8,7 @@ class TestScenario(TaskSet):
 
     @task
     def get_user(self):
-        self.client.get("/users/test")
+        self.client.get("/users/null")
 
 class LocustRunner(HttpLocust):
     task_set = TestScenario

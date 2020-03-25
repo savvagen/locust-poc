@@ -1,8 +1,7 @@
 setuptools
 wheel
 requests
-# locustio==0.14.4
-locustio==0.13.5
+locustio==0.14.5
 bzt==1.14.1
 locust-fixed-interval
 requests
