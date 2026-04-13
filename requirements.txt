@@ -6,7 +6,7 @@ bzt==1.14.1
 locust-fixed-interval
 requests
 PyHamcrest
-pytest==5.3.5
+pytest==9.0.3
 behave
 PyHamcrest
 Faker
